@@ -190,8 +190,15 @@ void runNQueens()
 
     char playAgain = 'Y';
 
+    vector<int> collectedTimes;
+    vector<int> collectedMoves;
+    vector<int> matches;
+    vector<int> processedSize;
+
     do
     {
+        int moves = 0;
+        int elapsedTime = 0;
         int size = inputInteger("\n\n\tEnter the board dimension nxn: ", true);
 
         while (size == 2 || size == 3)
@@ -199,6 +206,8 @@ void runNQueens()
             cout << "\n\tERROR: size cannot be " << size << ", because there is no solution.";
             size = inputInteger("\n\tEnter the board dimension nxn: ", true);
         }
+
+        time_t startTime = time(0);
 
         nQueens board(size);
 
@@ -237,6 +246,7 @@ void runNQueens()
                 int result = board.placeQueen(placeRow, placeCol);
                 if (result == 0)
                 {
+                    moves++;
                     cout << "\n\tQueen is placed";
                 }
                 else if (result == 1)
@@ -259,6 +269,11 @@ void runNQueens()
                 if (board.solved())
                 {
                     cout << "\n\tThe game is solved!";
+                    time_t endTime = time(0);
+                    elapsedTime = static_cast<int>(endTime - startTime);
+                    collectedTimes.push_back(elapsedTime);
+                    collectedMoves.push_back(moves);
+                    matches.push_back(size);
                     board.display();
                 }
 
@@ -275,6 +290,7 @@ void runNQueens()
 
                 if (board.removeQueen(removeRow, removeCol))
                 {
+                    moves++;
                     cout << "\n\tQueen is removed";
                 }
                 else
@@ -302,4 +318,107 @@ void runNQueens()
         playAgain = inputChar("\n\tPlay again? (Y-yes or N-no): ", string("YN"));
 
     } while (playAgain != 'N');
+
+    if (matches.empty())
+    {
+        cout << "\n\tNo game statistic collected.";
+    }
+    else
+    {
+        cout << "\n\tGame statistics:";
+
+        for (int i = 0; i < matches.size(); i++)
+        {
+            int currentSize = matches[i];
+            int gameCount = 0;
+            int fastest; //for time
+            int slowest;
+            int fastestMoves; //for moves
+            int slowestMoves;
+            int totalTime = 0;
+
+            if (find(processedSize.begin(), processedSize.end(), currentSize) == processedSize.end())
+            {
+                for (int j = 0; j < matches.size(); j++)
+                {
+                    if (matches[j] == currentSize)
+                    {
+                        gameCount++;
+
+                        totalTime += collectedTimes[j];
+
+                        if (gameCount == 1)
+                        {
+                            fastest = collectedTimes[j];
+                            slowest = collectedTimes[j];
+
+                            fastestMoves = collectedMoves[j];
+                            slowestMoves = collectedMoves[j];
+                        }
+                        else
+                        {
+                            if (fastest > collectedTimes[j])
+                            {
+                                fastest = collectedTimes[j];
+                                fastestMoves = collectedMoves[j];
+                            }
+
+                            if (slowest < collectedTimes[j])
+                            {
+                                slowest = collectedTimes[j];
+                                slowestMoves = collectedMoves[j];
+                            }
+                        }
+                    }
+                }
+
+                processedSize.push_back(currentSize);
+
+                //game(s), was/were
+                if (gameCount == 1)
+                {
+                    cout << "\n\t" << gameCount << " game using ";
+                    if (currentSize == 1)
+                    {
+                        cout << currentSize << " queen was played.";
+                    }
+                    else
+                    {
+                        cout << currentSize << " queens was played.";
+                    }
+                }
+                else
+                {
+                    cout << "\n\t" << gameCount << " games using ";
+                    if (currentSize == 1)
+                    {
+                        cout << currentSize << " queen were played.";
+                    }
+                    else
+                    {
+                        cout << currentSize << " queens were played.";
+                    }
+                }
+
+                //second(s) move(s)
+                cout << "\n\tThe fastest time was " << fastest << " second";
+                if (fastest != 1)
+                    cout << "s";
+                cout << " in " << fastestMoves << " move";
+                if (fastestMoves != 1)
+                    cout << "s";
+                cout << ".";
+
+                cout << "\n\tThe slowest time was " << slowest << " second";
+                if (slowest != 1)
+                    cout << "s";
+                cout << " in " << slowestMoves << " move";
+                if (slowestMoves != 1)
+                    cout << "s";
+                cout << ".";
+
+                cout << "\n\tThe average time was " << static_cast<double>(totalTime) / gameCount << " second(s)\n";
+            }
+        }
+    }
 }
