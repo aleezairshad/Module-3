@@ -1,4 +1,4 @@
-//Name: Hany, Aleeza, and Tuniphn
+﻿//Name: Hany, Aleeza, and Tuniphn
 // Date: 9/10/2026
 //Description: Module 3 - Games Applications using Container
 
@@ -10,6 +10,7 @@
 #include "input.h"
 #include "Tic_tac_toe.h"
 #include "TowerOfHanoi.h"
+#include "nQueens.h";
 
 using namespace std;
 
@@ -17,6 +18,7 @@ using namespace std;
 char menuOption();
 void runTicTacToe();
 void runTowerOfHanoi();
+void runNQueens();
 
 
 int main()
@@ -33,15 +35,17 @@ int main()
         {
         case '1':
             system("cls");
-           runTicTacToe(); // Call the function to run the Tic-Tac-Toe game
+            runTicTacToe(); // Call the function to run the Tic-Tac-Toe game
             break;
         case '2':
-			system("cls");
-			runTowerOfHanoi(); // Call the function to run the Tower of Hanoi game
+            system("cls");
+            runTowerOfHanoi(); // Call the function to run the Tower of Hanoi game
 
             break;
         case '3':
-            cout << "n-Queens\n";
+            system("cls");
+            runNQueens();
+            system("pause");
             break;
         case '0':
             running = false;
@@ -120,7 +124,7 @@ void runTicTacToe()
         {
             cout << "\n\tHUMAN moves...\n\n";
 
-            int row = inputInteger( "\t\tEnter the board's row # (1..3) or 0 to forfeit: ", 0, 3);
+            int row = inputInteger("\t\tEnter the board's row # (1..3) or 0 to forfeit: ", 0, 3);
 
             // Check if user wants to forfeit
             if (row == ZERO)
@@ -129,7 +133,7 @@ void runTicTacToe()
                 break;
             }
 
-            int column = inputInteger( "\t\tEnter the board's column # (1..3) or 0 to forfeit: ", 0, 3);
+            int column = inputInteger("\t\tEnter the board's column # (1..3) or 0 to forfeit: ", 0, 3);
 
             // Check if user wants to forfeit
             if (column == ZERO)
@@ -229,7 +233,7 @@ void runTicTacToe()
         }
 
         // Ask if user wants to play another game
-        again = toupper(inputChar( "\n\tPlay again? (Y-yes or N-no) ", static_cast<string>("Y,N")));
+        again = toupper(inputChar("\n\tPlay again? (Y-yes or N-no) ", static_cast<string>("Y,N")));
     }
 
     // Display game statistics
@@ -265,7 +269,7 @@ void runTicTacToe()
 
     cout << "\n";
     system("pause");
-} 
+}
 
 // precondition: None
 // postcondition: Runs the Tower of Hanoi game, allowing the user to move disks between pegs
@@ -303,7 +307,7 @@ void runTowerOfHanoi()
     // Allow user to play multiple games
     while (toupper(again) == 'Y')
     {
-        int numberOfDisks = inputInteger( "\n\tEnter the number of rings (1..64) to begin: ", MIN_DISKS, MAX_DISKS);
+        int numberOfDisks = inputInteger("\n\tEnter the number of rings (1..64) to begin: ", MIN_DISKS, MAX_DISKS);
         // Display note for 10..64 disks
         if (numberOfDisks >= TEN)
         {
@@ -325,7 +329,7 @@ void runTowerOfHanoi()
         // Main game loop
         while (!solved && !quit)
         {
-            char sourcePeg = toupper(inputChar( "\n\tSelect the top disk from the start peg " "(A, B, C, or Q-quit): ", static_cast<string>("A,B,C,Q")));
+            char sourcePeg = toupper(inputChar("\n\tSelect the top disk from the start peg " "(A, B, C, or Q-quit): ", static_cast<string>("A,B,C,Q")));
             // Quit current game
             if (sourcePeg == 'Q')
             {
@@ -348,14 +352,14 @@ void runTowerOfHanoi()
             {
                 sourceEmpty = game.isEmptyPegC();
             }
-			// Cannot move from an empty peg
+            // Cannot move from an empty peg
             if (sourceEmpty)
             {
                 cout << "\n\tERROR: Cannot move a disk from an empty peg.\n";
                 continue;
             }
-			// Get the target peg for the move
-            char targetPeg = toupper(inputChar( "\tSelect the end peg (A, B, C or Q-quit) " "to move the selected disk: ", static_cast<string>("A,B,C,Q")));
+            // Get the target peg for the move
+            char targetPeg = toupper(inputChar("\tSelect the end peg (A, B, C or Q-quit) " "to move the selected disk: ", static_cast<string>("A,B,C,Q")));
             // Quit current game
             if (targetPeg == 'Q')
             {
@@ -426,7 +430,7 @@ void runTowerOfHanoi()
             game.moveDisk(sourcePeg, targetPeg);
 
             moves++;
-			// Display the move made
+            // Display the move made
             cout << "\n\tTop disk from peg-" << sourcePeg << " has moved to peg-" << targetPeg << ".\n";
 
             // Check if all disks have been moved to peg C
@@ -437,7 +441,7 @@ void runTowerOfHanoi()
                 game.displayPegs();
                 break;
             }
-			// Display the current state of the pegs
+            // Display the current state of the pegs
             cout << "\n\tTower of Hanoi\n\n";
             game.displayPegs();
         }
@@ -445,9 +449,9 @@ void runTowerOfHanoi()
         // Game was successfully solved
         if (solved)
         {
-			time_t endTime = time(0); // Record the ending time
-			int gameTime = static_cast<int>(difftime(endTime, startTime)); // Calculate the total time taken to solve the game
-			// Display the number of moves taken to solve the game
+            time_t endTime = time(0); // Record the ending time
+            int gameTime = static_cast<int>(difftime(endTime, startTime)); // Calculate the total time taken to solve the game
+            // Display the number of moves taken to solve the game
             cout << "\n\tCongratulation! You have solved the game in " << moves << " moves.\n";
 
             // Update statistics
@@ -480,7 +484,7 @@ void runTowerOfHanoi()
             }
         }
         // Ask user to play again
-        again = toupper(inputChar( "\n\tPlay again? (Y-yes or N-no) ", static_cast<string>("Y,N")));
+        again = toupper(inputChar("\n\tPlay again? (Y-yes or N-no) ", static_cast<string>("Y,N")));
     }
 
     // Display statistics
@@ -500,16 +504,259 @@ void runTowerOfHanoi()
         {
             cout << "\t" << gamesPlayed << " games using " << disksPlayed << " disks were played.\n";
         }
-		// Display fastest game
+        // Display fastest game
         cout << "\t\tThe fastest time was " << fastestTime << " seconds in " << fastestMoves << " moves.\n";
-		// Display slowest game
+        // Display slowest game
         cout << "\t\tThe slowest time was " << slowestTime << " seconds in " << slowestMoves << " moves.\n";
-		// Calculate and display average game time
+        // Calculate and display average game time
         double averageTime = static_cast<double>(totalTime) / gamesPlayed;
-		// Display average game time
+        // Display average game time
         cout << "\t\tThe average time was " << averageTime << " second(s).\n";
     }
 
     cout << "\n";
     system("pause");
+}
+void runNQueens()
+{
+    cout << "\n\tThe n-queens puzzle is the problem of placing n chess queens on a n╫n chessboard";
+    cout << "\n\tso that no two queens threaten each other; thus, a solution requires that no two";
+    cout << "\n\tqueens share the same row, column, or diagonal. Solutions exist for all natural";
+    cout << "\n\tnumbers n with the exception of n = 2 and n = 3.";
+
+    char option = 'X';
+
+    char playAgain = 'Y';
+
+    vector<int> collectedTimes;
+    vector<int> collectedMoves;
+    vector<int> matches;
+    vector<int> processedSize;
+
+    do
+    {
+        int moves = 0;
+        int elapsedTime = 0;
+        int size = inputInteger("\n\n\tEnter the board dimension nxn: ", true);
+
+        while (size == 2 || size == 3)
+        {
+            cout << "\n\tERROR: size cannot be " << size << ", because there is no solution.";
+            size = inputInteger("\n\tEnter the board dimension nxn: ", true);
+        }
+
+        time_t startTime = time(0);
+
+        nQueens board(size);
+
+        do
+        {
+            if (size == 1)
+            {
+                cout << "\n\t1-Queen";
+            }
+            else
+            {
+                cout << "\n\t" << size << "-Queens";
+            }
+
+            board.display();
+
+            cout << "\n\tGame Options";
+            cout << "\n\t" << string(90, char(205));
+            cout << "\n\tA> Place a queen";
+            cout << "\n\tB> Remove an existing queen";
+            cout << "\n\t" << string(90, char(196));
+            cout << "\n\t0> return";
+            cout << "\n\t" << string(90, char(205));
+            option = inputChar("\n\tOption: ", string("AB0"));
+
+            switch (toupper(option))
+            {
+            case 'A':
+            {
+                cout << "\n\tPosition a queen in the row (1.." << board.getSize() << "): ";
+                int placeRow = inputInteger("", 1, board.getSize());
+
+                cout << "\n\tPosition a queen in the column (1.." << board.getSize() << "): ";
+                int placeCol = inputInteger("", 1, board.getSize());
+
+                int result = board.placeQueen(placeRow, placeCol);
+                if (result == 0)
+                {
+                    moves++;
+                    cout << "\n\tQueen is placed";
+                }
+                else if (result == 1)
+                {
+                    cout << "\n\tERROR: A queen already exists at this position.";
+                }
+                else if (result == 2)
+                {
+                    cout << "\n\tERROR: Another queen is in the same row.";
+                }
+                else if (result == 3)
+                {
+                    cout << "\n\tERROR: Another queen is in the same column.";
+                }
+                else if (result == 4)
+                {
+                    cout << "\n\tERROR: Another queen is on the same diagonal.";
+                }
+
+                if (board.solved())
+                {
+                    cout << "\n\tThe game is solved!";
+                    time_t endTime = time(0);
+                    elapsedTime = static_cast<int>(endTime - startTime);
+                    collectedTimes.push_back(elapsedTime);
+                    collectedMoves.push_back(moves);
+                    matches.push_back(size);
+                    board.display();
+                }
+
+            }
+            break;
+
+            case 'B':
+            {
+                cout << "\n\tPosition a queen in the row (1.." << board.getSize() << "): ";
+                int removeRow = inputInteger("", 1, board.getSize());
+
+                cout << "\n\tPosition a queen in the column (1.." << board.getSize() << "): ";
+                int removeCol = inputInteger("", 1, board.getSize());
+
+                if (board.removeQueen(removeRow, removeCol))
+                {
+                    moves++;
+                    cout << "\n\tQueen is removed";
+                }
+                else
+                {
+                    cout << "\n\tNo such queen existed.";
+                }
+            }
+            break;
+
+            case '0':
+            {
+            }
+            break;
+
+            default:
+            {
+                cout << "\n\tERROR: Invalid option.\n";
+            }
+            break;
+
+            }
+
+        } while (option != '0' && !board.solved());
+
+        playAgain = inputChar("\n\tPlay again? (Y-yes or N-no): ", string("YN"));
+
+    } while (playAgain != 'N');
+
+    if (matches.empty())
+    {
+        cout << "\n\tNo game statistic collected.";
+    }
+    else
+    {
+        cout << "\n\tGame statistics:";
+
+        for (int i = 0; i < matches.size(); i++)
+        {
+            int currentSize = matches[i];
+            int gameCount = 0;
+            int fastest; //for time
+            int slowest;
+            int fastestMoves; //for moves
+            int slowestMoves;
+            int totalTime = 0;
+
+            if (find(processedSize.begin(), processedSize.end(), currentSize) == processedSize.end())
+            {
+                for (int j = 0; j < matches.size(); j++)
+                {
+                    if (matches[j] == currentSize)
+                    {
+                        gameCount++;
+
+                        totalTime += collectedTimes[j];
+
+                        if (gameCount == 1)
+                        {
+                            fastest = collectedTimes[j];
+                            slowest = collectedTimes[j];
+
+                            fastestMoves = collectedMoves[j];
+                            slowestMoves = collectedMoves[j];
+                        }
+                        else
+                        {
+                            if (fastest > collectedTimes[j])
+                            {
+                                fastest = collectedTimes[j];
+                                fastestMoves = collectedMoves[j];
+                            }
+
+                            if (slowest < collectedTimes[j])
+                            {
+                                slowest = collectedTimes[j];
+                                slowestMoves = collectedMoves[j];
+                            }
+                        }
+                    }
+                }
+
+                processedSize.push_back(currentSize);
+
+                //game(s), was/were
+                if (gameCount == 1)
+                {
+                    cout << "\n\t" << gameCount << " game using ";
+                    if (currentSize == 1)
+                    {
+                        cout << currentSize << " queen was played.";
+                    }
+                    else
+                    {
+                        cout << currentSize << " queens was played.";
+                    }
+                }
+                else
+                {
+                    cout << "\n\t" << gameCount << " games using ";
+                    if (currentSize == 1)
+                    {
+                        cout << currentSize << " queen were played.";
+                    }
+                    else
+                    {
+                        cout << currentSize << " queens were played.";
+                    }
+                }
+
+                //second(s) move(s)
+                cout << "\n\tThe fastest time was " << fastest << " second";
+                if (fastest != 1)
+                    cout << "s";
+                cout << " in " << fastestMoves << " move";
+                if (fastestMoves != 1)
+                    cout << "s";
+                cout << ".";
+
+                cout << "\n\tThe slowest time was " << slowest << " second";
+                if (slowest != 1)
+                    cout << "s";
+                cout << " in " << slowestMoves << " move";
+                if (slowestMoves != 1)
+                    cout << "s";
+                cout << ".";
+
+                cout << "\n\tThe average time was " << static_cast<double>(totalTime) / gameCount << " second(s)\n";
+            }
+        }
+    }
 }
