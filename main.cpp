@@ -9,12 +9,14 @@
 #include <cctype>
 #include "input.h"
 #include "Tic_tac_toe.h"
+#include "TowerOfHanoi.h"
 
 using namespace std;
 
 //function prototypes
 char menuOption();
 void runTicTacToe();
+void runTowerOfHanoi();
 
 
 int main()
@@ -34,7 +36,9 @@ int main()
            runTicTacToe(); // Call the function to run the Tic-Tac-Toe game
             break;
         case '2':
-            cout << "Tower of Hanoi\n";
+			system("cls");
+			runTowerOfHanoi(); // Call the function to run the Tower of Hanoi game
+
             break;
         case '3':
             cout << "n-Queens\n";
@@ -256,6 +260,253 @@ void runTicTacToe()
         // Calculate average game time
         double averageTime = static_cast<double>(totalTime) / gamesPlayed;
 
+        cout << "\t\tThe average time was " << averageTime << " second(s).\n";
+    }
+
+    cout << "\n";
+    system("pause");
+} 
+
+// precondition: None
+// postcondition: Runs the Tower of Hanoi game, allowing the user to move disks between pegs
+void runTowerOfHanoi()
+{
+    const int ZERO = 0;
+    const int ONE = 1;
+    const int TEN = 10;
+    const int MIN_DISKS = 1;
+    const int MAX_DISKS = 64;
+
+    TowerOfHanoi game;
+    char again = 'Y';
+
+    // Statistics
+    int gamesPlayed = 0;
+    int totalTime = 0;
+    int fastestTime = 0;
+    int slowestTime = 0;
+    int fastestMoves = 0;
+    int slowestMoves = 0;
+    int disksPlayed = 0;
+    // Display instructions
+    cout << "\n\tThe Tower of Hanoi also called the Tower of Brahma or Lucas' Tower " << "is a mathematical game.\n";
+    cout << "\tIt consists of three pegs and a number of rings of different sizes, " << "which can slide onto\n";
+    cout << "\tany peg. The game starts with the rings in a neat stack in ascending " << "order of size on one\n";
+    cout << "\tpeg, the smallest at the top, thus making a conical shape.\n\n";
+    cout << "\tThe objective of the game is to move the entire stack from the " << "starting peg-A to ending peg-C,\n";
+    cout << "\tobeying the following simple rules:\n\n";
+    cout << "\t\t1. Only one disk can be moved at a time.\n";
+    cout << "\t\t2. Each move consists of taking the upper disk from one of the " << "stacks and\n";
+    cout << "\t\t   placing it on top of another stack or on an empty peg.\n";
+    cout << "\t\t3. No larger disk may be placed on top of a smaller disk.\n";
+
+    // Allow user to play multiple games
+    while (toupper(again) == 'Y')
+    {
+        int numberOfDisks = inputInteger( "\n\tEnter the number of rings (1..64) to begin: ", MIN_DISKS, MAX_DISKS);
+        // Display note for 10..64 disks
+        if (numberOfDisks >= TEN)
+        {
+            cout << "\t\tNote: The rings will be represented with numbers " << "(1 is the smallest size and " << numberOfDisks << " is the largest size).\n";
+        }
+        // Set up the game
+        game.setNumberOfDisks(numberOfDisks);
+
+        int moves = 0;
+        bool solved = false;
+        bool quit = false;
+        // Start timer
+        time_t startTime = time(0);
+
+        // Display initial board
+        cout << "\n\tTower of Hanoi\n\n";
+        game.displayPegs();
+
+        // Main game loop
+        while (!solved && !quit)
+        {
+            char sourcePeg = toupper(inputChar( "\n\tSelect the top disk from the start peg " "(A, B, C, or Q-quit): ", static_cast<string>("A,B,C,Q")));
+            // Quit current game
+            if (sourcePeg == 'Q')
+            {
+                quit = true;
+                break;
+            }
+
+            // Check if source peg is empty
+            bool sourceEmpty = false;
+
+            if (sourcePeg == 'A')
+            {
+                sourceEmpty = game.isEmptyPegA();
+            }
+            else if (sourcePeg == 'B')
+            {
+                sourceEmpty = game.isEmptyPegB();
+            }
+            else if (sourcePeg == 'C')
+            {
+                sourceEmpty = game.isEmptyPegC();
+            }
+			// Cannot move from an empty peg
+            if (sourceEmpty)
+            {
+                cout << "\n\tERROR: Cannot move a disk from an empty peg.\n";
+                continue;
+            }
+			// Get the target peg for the move
+            char targetPeg = toupper(inputChar( "\tSelect the end peg (A, B, C or Q-quit) " "to move the selected disk: ", static_cast<string>("A,B,C,Q")));
+            // Quit current game
+            if (targetPeg == 'Q')
+            {
+                quit = true;
+                break;
+            }
+            // Cannot move to the same peg
+            if (sourcePeg == targetPeg)
+            {
+                cout << "\n\tERROR: Cannot move a disk to the same peg.\n";
+                continue;
+            }
+            // Get the top disk from the source peg
+            int sourceDisk = ZERO;
+
+            if (sourcePeg == 'A')
+            {
+                sourceDisk = game.getTopPegA();
+            }
+            else if (sourcePeg == 'B')
+            {
+                sourceDisk = game.getTopPegB();
+            }
+            else if (sourcePeg == 'C')
+            {
+                sourceDisk = game.getTopPegC();
+            }
+
+            // Get the top disk from the target peg
+            int targetDisk = ZERO;
+            bool targetEmpty = false;
+
+            if (targetPeg == 'A')
+            {
+                targetEmpty = game.isEmptyPegA();
+
+                if (!targetEmpty)
+                {
+                    targetDisk = game.getTopPegA();
+                }
+            }
+            else if (targetPeg == 'B')
+            {
+                targetEmpty = game.isEmptyPegB();
+
+                if (!targetEmpty)
+                {
+                    targetDisk = game.getTopPegB();
+                }
+            }
+            else if (targetPeg == 'C')
+            {
+                targetEmpty = game.isEmptyPegC();
+
+                if (!targetEmpty)
+                {
+                    targetDisk = game.getTopPegC();
+                }
+            }
+
+            // Cannot place larger disk on smaller disk
+            if (!targetEmpty && sourceDisk > targetDisk)
+            {
+                cout << "\n\tERROR: Cannot place a larger disk " << "on top of a smaller disk.\n";
+                continue;
+            }
+            // Make the move
+            game.moveDisk(sourcePeg, targetPeg);
+
+            moves++;
+			// Display the move made
+            cout << "\n\tTop disk from peg-" << sourcePeg << " has moved to peg-" << targetPeg << ".\n";
+
+            // Check if all disks have been moved to peg C
+            if (game.isEmptyPegA() && game.isEmptyPegB() && !game.isEmptyPegC())
+            {
+                solved = true;
+                cout << "\n";
+                game.displayPegs();
+                break;
+            }
+			// Display the current state of the pegs
+            cout << "\n\tTower of Hanoi\n\n";
+            game.displayPegs();
+        }
+
+        // Game was successfully solved
+        if (solved)
+        {
+			time_t endTime = time(0); // Record the ending time
+			int gameTime = static_cast<int>(difftime(endTime, startTime)); // Calculate the total time taken to solve the game
+			// Display the number of moves taken to solve the game
+            cout << "\n\tCongratulation! You have solved the game in " << moves << " moves.\n";
+
+            // Update statistics
+            gamesPlayed++;
+            totalTime += gameTime;
+            disksPlayed = numberOfDisks;
+            // First completed game
+            if (gamesPlayed == ONE)
+            {
+                fastestTime = gameTime;
+                slowestTime = gameTime;
+
+                fastestMoves = moves;
+                slowestMoves = moves;
+            }
+            else
+            {
+                // Check fastest game
+                if (gameTime < fastestTime)
+                {
+                    fastestTime = gameTime;
+                    fastestMoves = moves;
+                }
+                // Check slowest game
+                if (gameTime > slowestTime)
+                {
+                    slowestTime = gameTime;
+                    slowestMoves = moves;
+                }
+            }
+        }
+        // Ask user to play again
+        again = toupper(inputChar( "\n\tPlay again? (Y-yes or N-no) ", static_cast<string>("Y,N")));
+    }
+
+    // Display statistics
+    if (gamesPlayed == ZERO)
+    {
+        cout << "\n\tNo game statistic collected.\n";
+    }
+    else
+    {
+        cout << "\n\tGame statistics:\n\n";
+
+        if (gamesPlayed == ONE)
+        {
+            cout << "\t1 game using " << disksPlayed << " disks was played.\n";
+        }
+        else
+        {
+            cout << "\t" << gamesPlayed << " games using " << disksPlayed << " disks were played.\n";
+        }
+		// Display fastest game
+        cout << "\t\tThe fastest time was " << fastestTime << " seconds in " << fastestMoves << " moves.\n";
+		// Display slowest game
+        cout << "\t\tThe slowest time was " << slowestTime << " seconds in " << slowestMoves << " moves.\n";
+		// Calculate and display average game time
+        double averageTime = static_cast<double>(totalTime) / gamesPlayed;
+		// Display average game time
         cout << "\t\tThe average time was " << averageTime << " second(s).\n";
     }
 
