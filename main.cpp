@@ -740,7 +740,7 @@ void runNQueens()
                 }
 
                 //second(s) move(s)
-                cout << "\n\tThe fastest time was " << fastest << " second";
+                cout << "\n\t\tThe fastest time was " << fastest << " second";
                 if (fastest != 1)
                     cout << "s";
                 cout << " in " << fastestMoves << " move";
@@ -748,7 +748,7 @@ void runNQueens()
                     cout << "s";
                 cout << ".";
 
-                cout << "\n\tThe slowest time was " << slowest << " second";
+                cout << "\n\t\tThe slowest time was " << slowest << " second";
                 if (slowest != 1)
                     cout << "s";
                 cout << " in " << slowestMoves << " move";
