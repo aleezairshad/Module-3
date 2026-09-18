@@ -7,6 +7,7 @@
 #include <ctime>
 #include <cstdlib>
 #include <cctype>
+#include <vector>
 #include "input.h"
 #include "Tic_tac_toe.h"
 #include "TowerOfHanoi.h"
@@ -529,29 +530,29 @@ void runNQueens()
 
     char option = 'X';
     char playAgain = 'Y';
-	// Vectors to store game statistics
+    // Vectors to store game statistics
     vector<int> collectedTimes;
     vector<int> collectedMoves;
     vector<int> matches;
     vector<int> processedSize;
-	const int ONE = 1, ZERO = 0, TWO = 2, THREE = 3, FOUR = 4;
+    const int ONE = 1, ZERO = 0, TWO = 2, THREE = 3, FOUR = 4;
 
     do
     {
         int moves = 0;
         int elapsedTime = 0;
-		int size = inputInteger("\n\n\tEnter the board dimension nxn: ", true); // Input the board size from the user
-		// Check for invalid board sizes (2 and 3) and prompt the user to enter a valid size
+        int size = inputInteger("\n\n\tEnter the board dimension nxn: ", true); // Input the board size from the user
+        // Check for invalid board sizes (2 and 3) and prompt the user to enter a valid size
         while (size == 2 || size == 3)
         {
             cout << "\n\tERROR: size cannot be " << size << ", because there is no solution.";
-			size = inputInteger("\n\tEnter the board dimension nxn: ", true); // Prompt the user to enter a valid board size
+            size = inputInteger("\n\tEnter the board dimension nxn: ", true); // Prompt the user to enter a valid board size
         }
         time_t startTime = time(0);
-		nQueens board(size); // Create an instance of the nQueens class with the specified board size
+        nQueens board(size); // Create an instance of the nQueens class with the specified board size
         do
         {
-			// Display the game title and board size
+            // Display the game title and board size
             if (size == ONE)
             {
                 cout << "\n\t1-Queen";
@@ -571,22 +572,25 @@ void runNQueens()
             cout << "\n\t0> return";
             cout << "\n\t" << string(90, char(205));
             option = inputChar("\n\tOption: ", string("AB0"));
-			// Process the user's option
+            // Process the user's option
             switch (toupper(option))
             {
             case 'A':
             {
                 cout << "\n\tPosition a queen in the row (1.." << board.getSize() << "): ";
-                int placeRow = inputInteger("", 1, board.getSize()); 
 
-                cout << "\n\tPosition a queen in the column (1.." << board.getSize() << "): ";
-                int placeCol = inputInteger("", 1, board.getSize());
-				// Attempt to place a queen on the board and check for conflicts
+                int placeRow = inputInteger("", ONE, board.getSize());
+
+                cout << "\n\tPosition a queen in the colume (1.." << board.getSize() << "): ";
+
+                int placeCol = inputInteger("", ONE, board.getSize());
+
+                // Attempt to place a queen
                 int result = board.placeQueen(placeRow, placeCol);
-                if (result == 0)
+
+                if (result == ZERO)
                 {
                     moves++;
-                    cout << "\n\tQueen is placed";
                 }
                 else if (result == ONE)
                 {
@@ -605,17 +609,30 @@ void runNQueens()
                     cout << "\n\tERROR: Another queen is on the same diagonal.";
                 }
 
+                // Check if game is solved
                 if (board.solved())
                 {
-                    cout << "\n\tThe game is solved!";
                     time_t endTime = time(0);
-					elapsedTime = static_cast<int>(endTime - startTime); // Calculate the elapsed time in seconds
-					collectedTimes.push_back(elapsedTime); // Store the elapsed time for this game
-					collectedMoves.push_back(moves); // Store the number of moves for this game
-					matches.push_back(size); // Store the board size for this game
-                    board.display(); 
-                } 
+                    elapsedTime = static_cast<int>(endTime - startTime);
 
+                    cout << "\n\tCongratulation! You have solved " << size << "-Queens in " << moves << " move";
+
+                    if (moves != ONE)
+                    {
+                        cout << "s";
+                    }
+
+                    cout << ".\n";
+
+                    // Store statistics
+                    collectedTimes.push_back(elapsedTime);
+                    collectedMoves.push_back(moves);
+                    matches.push_back(size);
+
+                    // Display final board
+                    cout << "\n\t" << size << "-Queens";
+                    board.display();
+                }
             }
             break;
 
@@ -656,8 +673,8 @@ void runNQueens()
 
         playAgain = inputChar("\n\tPlay again? (Y-yes or N-no): ", string("YN"));
 
-    } while (playAgain != 'N'); 
-	// Display game statistics
+    } while (playAgain != 'N');
+    // Display game statistics
     if (matches.empty())
     {
         cout << "\n\tNo game statistic collected.";
@@ -665,6 +682,7 @@ void runNQueens()
     else
     {
         cout << "\n\tGame statistics:";
+        cout << "\n";
 
         for (int i = 0; i < matches.size(); i++)
         {
@@ -713,7 +731,7 @@ void runNQueens()
 
                 processedSize.push_back(currentSize);
 
-				// Display the number of games played for the current board size
+                // Display the number of games played for the current board size
                 if (gameCount == 1)
                 {
                     cout << "\n\t" << gameCount << " game using ";
@@ -755,10 +773,11 @@ void runNQueens()
                 if (slowestMoves != 1)
                     cout << "s";
                 cout << ".";
-				// Calculate and display average time
-                cout << "\n\tThe average time was " << static_cast<double>(totalTime) / gameCount << " second(s)\n";
+                // Calculate and display average time
+                cout << "\n\t\tThe average time was " << static_cast<double>(totalTime) / gameCount << " second(s)\n";
             }
         }
     }
-	system("pause");
+	cout << "\n";
+    system("pause");
 }

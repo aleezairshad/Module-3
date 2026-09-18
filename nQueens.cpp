@@ -36,23 +36,61 @@ int nQueens::getSize() const
 // postcondition: Displays the current state of the chessboard with Unicode characters for better visualization
 void nQueens::display() const
 {
-	cout << "\n\t" << char(201) << string((size * 2 - 1), char(205)) << char(187);
+	const int ONE = 1, TWO = 2;
+	// Display the top border of the chessboard
+	cout << "\n\t" << char(201) << string((size * TWO - ONE), char(205)) << char(187);
+
 	for (int i = 0; i < size; i++)
 	{
 		cout << "\n\t" << char(186);
+
 		for (int j = 0; j < size; j++)
 		{
-			cout << board[i][j];
+			// For a 1x1 board, display an empty space
+			if (size == 1 && board[i][j] == '-')
+			{
+				cout << ' ';
+			}
+			// For the last row, display empty positions as spaces
+			else if (i == size - 1 && board[i][j] == '-')
+			{
+				cout << ' ';
+			}
+			else
+			{
+				cout << board[i][j];
+			}
 
 			if (j < size - 1)
 			{
 				cout << char(179);
 			}
 		}
+
 		cout << char(186);
 	}
-	cout << "\n\t" << char(200) << string((size * 2 - 1), char(205)) << char(188) << "\n";
+	// Display the bottom border of the chessboard
+	cout << "\n\t" << char(200) << string((size * TWO - ONE), char(205)) << char(188) << "\n";
 }
+//void nQueens::display() const
+//{
+//	cout << "\n\t" << char(201) << string((size * 2 - 1), char(205)) << char(187);
+//	for (int i = 0; i < size; i++)
+//	{
+//		cout << "\n\t" << char(186);
+//		for (int j = 0; j < size; j++)
+//		{
+//			cout << board[i][j];
+//
+//			if (j < size - 1)
+//			{
+//				cout << char(179);
+//			}
+//		}
+//		cout << char(186);
+//	}
+//	cout << "\n\t" << char(200) << string((size * 2 - 1), char(205)) << char(188) << "\n";
+//}
 
 // precondition: row and col are valid indices for the chessboard
 // postcondition: Checks if placing a queen at the specified position (row, col) would result in a conflict with existing queens on the board
